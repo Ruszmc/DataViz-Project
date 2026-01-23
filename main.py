@@ -95,6 +95,8 @@ def welcome():
     st.subheader("Random Sample")
     st.dataframe(df.sample(10), width="stretch", hide_index=True)
 
+    st.page_link("Dataset Details", "pages/dataset_details.py")
+
 
 with st.sidebar:
     st.header("Dictionary")
