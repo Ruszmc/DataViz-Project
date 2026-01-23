@@ -63,7 +63,7 @@ with col2:
                         box=True, points="all",
                         title=f"Violin Plot of {selected_metric}",
                         template="plotly_white")
-    elif chart_type == "Bar Chart (Top 20)":
+    elif chart_type == "Bar Chart (Top 50)":
         # Bar charts for large datasets need aggregation, otherwise they are extremely slow and can fail.
         # Here we'll show a bar chart of the metric grouped by the 'color_by' selection if provided.
         if color_param:
