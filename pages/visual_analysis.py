@@ -56,7 +56,7 @@ with col2:
                            template="plotly_white")
     elif chart_type == "Bar Chart":
         fig = px.bar(df, y=selected_metric, x=color_param, color=color_param,
-                     orientation='h', title=f"Box plot of {selected_metric}",
+                     orientation='w', title=f"Box plot of {selected_metric}",
                      template="plotly_white")
     
     st.plotly_chart(fig, width="stretch")
