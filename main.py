@@ -95,7 +95,7 @@ def welcome():
     st.subheader("Random Sample")
     st.dataframe(df.sample(10), width="stretch", hide_index=True)
 
-    st.link_button("Open Dataset Details Page", "pages/dataset_details.py")
+    st.link_button("Click for Dataset", "https://https://www.kaggle.com/datasets/salvatorerastelli/spotify-and-youtube")
 
 
 with st.sidebar:
