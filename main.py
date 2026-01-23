@@ -95,7 +95,7 @@ def welcome():
     st.subheader("Random Sample")
     st.dataframe(df.sample(10), width="stretch", hide_index=True)
 
-    st.page_link("pages/dataset_details.py")
+    st.link_button("Open Dataset Details Page", "pages/dataset_details.py")
 
 
 with st.sidebar:
