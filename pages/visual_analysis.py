@@ -50,7 +50,7 @@ with col2:
     color_param = None if color_by == "Keine" else color_by
     
     # Random sample for all charts to improve performance and clarity
-    df_sample = df.sample(n=min(500, len(df)), random_state=42)
+    df_sample = df.sample(n=min(100, len(df)), random_state=42)
     
     if chart_type == "Histogramm":
         fig = px.histogram(df_sample, x=selected_metric, color=color_param, 
