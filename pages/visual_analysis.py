@@ -36,7 +36,7 @@ with col1:
     
     chart_type = st.radio(
         "Select chart type",
-        ["Histogram", "Bar Chart"]
+        ["Histogram", "Box Plot", "Violin Plot", "Bar Chart (Top 20)"]
     )
     
     color_by = st.selectbox(
@@ -54,10 +54,30 @@ with col2:
                            marginal="rug", hover_data=df.columns,
                            title=f"Histogram of {selected_metric}",
                            template="plotly_white")
-    elif chart_type == "Bar Chart":
-        fig = px.bar(df, y=selected_metric, x=color_param, color=color_param,
-                     orientation='w', title=f"Box plot of {selected_metric}",
+    elif chart_type == "Box Plot":
+        fig = px.box(df, y=selected_metric, x=color_param, color=color_param,
+                     title=f"Box Plot of {selected_metric}",
                      template="plotly_white")
+    elif chart_type == "Violin Plot":
+        fig = px.violin(df, y=selected_metric, x=color_param, color=color_param, 
+                        box=True, points="all",
+                        title=f"Violin Plot of {selected_metric}",
+                        template="plotly_white")
+    elif chart_type == "Bar Chart (Top 20)":
+        # Bar charts for large datasets need aggregation, otherwise they are extremely slow and can fail.
+        # Here we'll show a bar chart of the metric grouped by the 'color_by' selection if provided.
+        if color_param:
+            df_agg = df.groupby(color_param)[selected_metric].mean().reset_index()
+            fig = px.bar(df_agg, x=color_param, y=selected_metric, color=color_param,
+                         title=f"Average {selected_metric} by {color_param}",
+                         template="plotly_white")
+        else:
+            # If no grouping, a bar chart of ~20k rows is probably not what the user wants, 
+            # but we can show the top 20 tracks by that metric as a fallback.
+            df_top = df.sort_values(selected_metric, ascending=False).head(20)
+            fig = px.bar(df_top, x='Track', y=selected_metric, 
+                         title=f"Top 20 Tracks by {selected_metric}",
+                         template="plotly_white")
     
     st.plotly_chart(fig, width="stretch")
 
