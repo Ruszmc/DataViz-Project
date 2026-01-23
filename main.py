@@ -69,6 +69,7 @@ def welcome():
     st.divider()
 
     st.subheader("Data Set Overview")
+    st.link_button("Click for Dataset", "https://www.kaggle.com/datasets/salvatorerastelli/spotify-and-youtube")
     m1, m2, m3, m4 = st.columns(4)
     with m1:
         st.metric("Total Songs", f"{len(df):,}")
@@ -95,7 +96,7 @@ def welcome():
     st.subheader("Random Sample")
     st.dataframe(df.sample(10), width="stretch", hide_index=True)
 
-    st.link_button("Click for Dataset", "https://www.kaggle.com/datasets/salvatorerastelli/spotify-and-youtube")
+
 
 
 with st.sidebar:
