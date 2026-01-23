@@ -36,7 +36,7 @@ with st.expander("🛠️ Filter Options", expanded=True):
         )
 
         happy_mood = st.radio(
-            'Should the music be happy?',
+            'Preferred mood:',
             ['Sad / Melancholic', 'Neutral', 'Happy / Cheerful'],
             index=1
         )
@@ -48,7 +48,7 @@ with st.expander("🛠️ Filter Options", expanded=True):
         min_streams = int(df['Stream'].min())
         
         streams_range = st.slider(
-            'Filter by Spotify Streams (in Millions)',
+            'Spotify Streams (in Millions)',
             min_value=0,
             max_value=int(max_streams / 1_000_000),
             value=(0, int(max_streams / 1_000_000)),

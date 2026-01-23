@@ -92,7 +92,7 @@ def welcome():
 
     st.divider()
     
-    st.subheader("Random Tracks Sample")
+    st.subheader("Random Sample")
     st.dataframe(df.sample(10), width="stretch", hide_index=True)
 
 

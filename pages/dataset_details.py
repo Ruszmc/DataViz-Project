@@ -54,10 +54,10 @@ st.divider()
 
 # --- Section 3: Detailed Data View ---
 st.subheader("📑 Full Data Explorer")
-st.write("Browse the entire dataset below. Use the filters in the sidebar or search directly in the table.")
+st.write("Browse the entire dataset below. Use the filter below, to look at specific artists data only.")
 
 # Simple filtering for the explorer
-artist_filter = st.multiselect("Filter by Artist", options=sorted(df['Artist'].unique()[:100])) # Limit to 100 for performance in selectbox
+artist_filter = st.multiselect("Filter by Artist", options=sorted(df['Artist'].unique()[:100]))
 
 explorer_df = df.copy()
 if artist_filter:
