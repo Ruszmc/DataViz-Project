@@ -6,6 +6,19 @@ def load_data():
     df = pd.read_csv('data_set.csv', index_col=0)
     df.columns = df.columns.str.strip()
 
+    # Fix for Arrow serialization issues with newer NumPy/Pandas
+    # Ensure all float columns are standard numpy float64 (not nullable Float64)
+    # and all object columns are clean.
+    for col in df.columns:
+        if pd.api.types.is_float_dtype(df[col]):
+            df[col] = df[col].astype('float64')
+        elif pd.api.types.is_integer_dtype(df[col]):
+            df[col] = df[col].astype('int64')
+        elif pd.api.types.is_object_dtype(df[col]):
+            # Ensure object columns don't contain mixed types that confuse Arrow
+            # Forcing to string if they are mostly strings
+            df[col] = df[col].astype(str)
+
     return df
 
 st.set_page_config(page_title="Spotify & YouTube Analytics", page_icon="📊", layout="wide")
