@@ -74,7 +74,7 @@ with col2:
         else:
             # If no grouping, a bar chart of ~20k rows is probably not what the user wants, 
             # but we can show the top 20 tracks by that metric as a fallback.
-            df_top = df.sort_values(selected_metric, ascending=False).head(20)
+            df_top = df.sort_values(selected_metric, ascending=False).head(50)
             fig = px.bar(df_top, x='Track', y=selected_metric, 
                          title=f"Top 20 Tracks by {selected_metric}",
                          template="plotly_white")
