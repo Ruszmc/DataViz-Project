@@ -36,7 +36,7 @@ with col1:
     
     chart_type = st.radio(
         "Select chart type",
-        ["Histogram", "Box Plot", "Violin Plot"]
+        ["Histogram", "Bar Chart"]
     )
     
     color_by = st.selectbox(
@@ -54,15 +54,10 @@ with col2:
                            marginal="rug", hover_data=df.columns,
                            title=f"Histogram of {selected_metric}",
                            template="plotly_white")
-    elif chart_type == "Box Plot":
-        fig = px.box(df, y=selected_metric, x=color_param, color=color_param,
-                     title=f"Box Plot of {selected_metric}",
+    elif chart_type == "Bar Chart":
+        fig = px.bar(df, y=selected_metric, x=color_param, color=color_param,
+                     orientation='h', title=f"Box plot of {selected_metric}",
                      template="plotly_white")
-    else:
-        fig = px.violin(df, y=selected_metric, x=color_param, color=color_param, 
-                        box=True, points="all",
-                        title=f"Violin Plot of {selected_metric}",
-                        template="plotly_white")
     
     st.plotly_chart(fig, width="stretch")
 
