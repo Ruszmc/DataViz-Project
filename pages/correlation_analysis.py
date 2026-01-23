@@ -51,7 +51,7 @@ with c1:
                      trendline="ols",
                      title=f"Scatter plot of {var_x} and {var_y}",
                      template="plotly_white")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 with c2:
     st.subheader("Stats")
@@ -84,4 +84,4 @@ if st.checkbox("Show Heatmap for all features"):
                          color_continuous_scale='RdBu_r',
                          title="Correlation Heatmap",
                          template="plotly_white")
-    st.plotly_chart(fig_heat, use_container_width=True)
+    st.plotly_chart(fig_heat, width="stretch")

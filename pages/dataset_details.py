@@ -31,7 +31,7 @@ with col1:
 
 with col2:
     st.write("**Numerical Summary**")
-    st.dataframe(df.describe().T, use_container_width=True)
+    st.dataframe(df.describe().T, width="stretch")
 
 st.divider()
 
@@ -42,13 +42,13 @@ q1, q2 = st.columns(2)
 with q1:
     st.write("**Missing Values per Column**")
     missing_data = df.isnull().sum()
-    st.dataframe(missing_data[missing_data > 0].to_frame(name="Missing Count"), use_container_width=True)
+    st.dataframe(missing_data[missing_data > 0].to_frame(name="Missing Count"), width="stretch")
 
 with q2:
     st.write("**Unique Values per Category**")
     cat_cols = ['Artist', 'Album', 'Album_type', 'Channel', 'Licensed', 'official_video']
     unique_counts = {col: df[col].nunique() for col in cat_cols if col in df.columns}
-    st.dataframe(pd.Series(unique_counts).to_frame(name="Unique Values"), use_container_width=True)
+    st.dataframe(pd.Series(unique_counts).to_frame(name="Unique Values"), width="stretch")
 
 st.divider()
 
@@ -63,4 +63,4 @@ explorer_df = df.copy()
 if artist_filter:
     explorer_df = explorer_df[explorer_df['Artist'].isin(artist_filter)]
 
-st.dataframe(explorer_df, use_container_width=True)
+st.dataframe(explorer_df, width="stretch", hide_index=True)

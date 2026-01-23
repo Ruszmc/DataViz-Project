@@ -119,7 +119,7 @@ if not filtered_df.empty:
     display_df_styled = display_df[display_cols].copy()
     display_df_styled['Stream'] = display_df_styled['Stream'].apply(lambda x: f"{x:,.0f}")
     
-    st.dataframe(display_df_styled, use_container_width=True, hide_index=True)
+    st.dataframe(display_df_styled, width="stretch", hide_index=True)
     
     # Add a success message if many songs found
     if len(filtered_df) > 0:

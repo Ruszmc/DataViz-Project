@@ -80,7 +80,7 @@ def welcome():
     st.divider()
     
     st.subheader("Random Tracks Sample")
-    st.dataframe(df.sample(10), use_container_width=True, hide_index=True)
+    st.dataframe(df.sample(10), width="stretch", hide_index=True)
 
 
 with st.sidebar:
