@@ -36,7 +36,7 @@ with col1:
     
     chart_type = st.radio(
         "Wählen Sie den Diagrammtyp",
-        ["Histogramm", "Box-Plot", "Violin-Plot", "Balkendiagramm (Top 50)"]
+        ["Histogramm", "Box-Plot", "Violin-Plot", "Balkendiagramm"]
     )
     
     color_by = st.selectbox(
@@ -49,8 +49,8 @@ with col2:
     
     color_param = None if color_by == "Keine" else color_by
     
-    # Random sample for the first three charts
-    df_sample = df.sample(n=min(500, len(df)), random_state=42) if chart_type in ["Histogramm", "Box-Plot", "Violin-Plot"] else df
+    # Random sample for all charts to improve performance and clarity
+    df_sample = df.sample(n=min(500, len(df)), random_state=42)
     
     if chart_type == "Histogramm":
         fig = px.histogram(df_sample, x=selected_metric, color=color_param, 
@@ -66,21 +66,20 @@ with col2:
                         box=True, points="all",
                         title=f"Violin-Plot von {selected_metric} (Stichprobe von 500)",
                         template="plotly_white")
-    elif chart_type == "Balkendiagramm (Top 50)":
+    elif chart_type == "Balkendiagramm":
         # Bar charts for large datasets need aggregation, otherwise they are extremely slow and can fail.
         # Here we'll show a bar chart of the metric grouped by the 'color_by' selection if provided.
         if color_param:
-            df_agg = df.groupby(color_param)[selected_metric].mean().reset_index()
+            df_agg = df_sample.groupby(color_param)[selected_metric].mean().reset_index()
             fig = px.bar(df_agg, x=color_param, y=selected_metric, color=color_param,
-                         title=f"Durchschnittliche {selected_metric} nach {color_param}",
+                         title=f"Durchschnittliche {selected_metric} nach {color_param} (Stichprobe von 500)",
                          template="plotly_white")
         else:
-            # If no grouping, a bar chart of ~20k rows is probably not what the user wants, 
-            # but we can show the top 50 tracks by that metric as a fallback.
-            df_top = df.sort_values(selected_metric, ascending=False).head(50)
-            fig = px.bar(df_top, x='Track', y=selected_metric, 
-                         title=f"Top 50 Tracks nach {selected_metric}",
+            # Show a sample of songs, but hide the X-axis labels as requested
+            fig = px.bar(df_sample, x='Track', y=selected_metric, 
+                         title=f"Balkendiagramm von {selected_metric} (Stichprobe von 500)",
                          template="plotly_white")
+            fig.update_layout(xaxis={'showticklabels': False})
     
     st.plotly_chart(fig, width="stretch")
 
