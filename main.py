@@ -4,35 +4,20 @@ import pandas as pd
 @st.cache_data
 def load_data():
     df = pd.read_csv('data_set.csv', index_col=0)
-    
-    # Robust fix for Arrow serialization issues
-    # 1. Ensure all column names are strings and stripped
-    df.columns = [str(col).strip() for col in df.columns]
+    df.columns = df.columns.str.strip()
 
-    # 2. Fix column types
+    # Fix for Arrow serialization issues with newer NumPy/Pandas
+    # Ensure all float columns are standard numpy float64 (not nullable Float64)
+    # and all object columns are clean.
     for col in df.columns:
-        # Try to convert to numeric if it's supposed to be (to handle mixed types in object cols)
-        # This includes handling potential string/object data that should be float
-        if col in ['Danceability', 'Energy', 'Key', 'Loudness', 'Speechiness', 'Acousticness', 
-                  'Instrumentalness', 'Liveness', 'Valence', 'Tempo', 'Duration_ms', 
-                  'Views', 'Likes', 'Comments', 'Stream']:
-            df[col] = pd.to_numeric(df[col], errors='coerce')
-        
-        # Now apply standard casts to ensure compatibility with Arrow
         if pd.api.types.is_float_dtype(df[col]):
-            # Use float32 for better memory efficiency while maintaining precision for these metrics
-            df[col] = df[col].astype('float32')
+            df[col] = df[col].astype('float64')
         elif pd.api.types.is_integer_dtype(df[col]):
-            # Use int32 where possible, but Stream/Views might exceed int32 range (2.1B)
-            # Checking if the max value fits in int32
-            if not df[col].empty and df[col].max() < 2**31 - 1 and df[col].min() > -2**31:
-                df[col] = df[col].astype('int32')
-            else:
-                df[col] = df[col].astype('int64')
+            df[col] = df[col].astype('int64')
         elif pd.api.types.is_object_dtype(df[col]):
-            # Ensure object columns are clean strings, handle None/NaN to avoid mixed types
-            # Using fillna('') after casting to string because astype(str) converts NaN to 'nan'
-            df[col] = df[col].astype(str).replace(['nan', 'None', 'NaN'], '')
+            # Ensure object columns don't contain mixed types that confuse Arrow
+            # Forcing to string if they are mostly strings
+            df[col] = df[col].astype(str)
 
     return df
 
