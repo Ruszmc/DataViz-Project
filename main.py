@@ -4,20 +4,31 @@ import pandas as pd
 @st.cache_data
 def load_data():
     df = pd.read_csv('data_set.csv', index_col=0)
-    df.columns = df.columns.str.strip()
+    
+    # Robust fix for Arrow serialization issues
+    # 1. Ensure all column names are strings and stripped
+    df.columns = [str(col).strip() for col in df.columns]
 
-    # Fix for Arrow serialization issues with newer NumPy/Pandas
-    # Ensure all float columns are standard numpy float64 (not nullable Float64)
-    # and all object columns are clean.
+    # 2. Fix column types
     for col in df.columns:
+        # Try to convert to numeric if it's supposed to be (to handle mixed types in object cols)
+        # This includes handling potential string/object data that should be float
+        if col in ['Danceability', 'Energy', 'Key', 'Loudness', 'Speechiness', 'Acousticness', 
+                  'Instrumentalness', 'Liveness', 'Valence', 'Tempo', 'Duration_ms', 
+                  'Views', 'Likes', 'Comments', 'Stream']:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+        
+        # Now apply standard casts to ensure compatibility with Arrow
         if pd.api.types.is_float_dtype(df[col]):
+            # Standard float64, no nullable Float64
             df[col] = df[col].astype('float64')
         elif pd.api.types.is_integer_dtype(df[col]):
+            # Standard int64
             df[col] = df[col].astype('int64')
         elif pd.api.types.is_object_dtype(df[col]):
-            # Ensure object columns don't contain mixed types that confuse Arrow
-            # Forcing to string if they are mostly strings
-            df[col] = df[col].astype(str)
+            # Ensure object columns are clean strings, handle None/NaN to avoid mixed types
+            # Using fillna('') after casting to string because astype(str) converts NaN to 'nan'
+            df[col] = df[col].astype(str).replace(['nan', 'None', 'NaN'], '')
 
     return df
 
