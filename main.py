@@ -20,11 +20,15 @@ def load_data():
         
         # Now apply standard casts to ensure compatibility with Arrow
         if pd.api.types.is_float_dtype(df[col]):
-            # Standard float64, no nullable Float64
-            df[col] = df[col].astype('float64')
+            # Use float32 for better memory efficiency while maintaining precision for these metrics
+            df[col] = df[col].astype('float32')
         elif pd.api.types.is_integer_dtype(df[col]):
-            # Standard int64
-            df[col] = df[col].astype('int64')
+            # Use int32 where possible, but Stream/Views might exceed int32 range (2.1B)
+            # Checking if the max value fits in int32
+            if not df[col].empty and df[col].max() < 2**31 - 1 and df[col].min() > -2**31:
+                df[col] = df[col].astype('int32')
+            else:
+                df[col] = df[col].astype('int64')
         elif pd.api.types.is_object_dtype(df[col]):
             # Ensure object columns are clean strings, handle None/NaN to avoid mixed types
             # Using fillna('') after casting to string because astype(str) converts NaN to 'nan'
